@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Élire ses délégués au CME — Guide civique & Outil de dépouillement officiel</title>
+    <meta name="description" content="Application éducative et outil de dépouillement en direct pour les élections au Conseil Municipal des Enfants (CME). 4 modalités expliquées pour élèves et adultes, calcul automatique, gestion de la parité et procès-verbal officiel imprimable." />
+
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Favicon & PWA Theme -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗳️</text></svg>">
+    <meta name="theme-color" content="#1e3a8a" />
+  </head>
+  <body>
+    <!-- En-tête principal -->
+    <header class="app-header no-print">
+      <div class="header-inner">
+        <div class="header-brand">
+          <div class="brand-badge" aria-hidden="true">🗳️</div>
+          <div class="brand-text">
+            <h1>Élections CME <span class="badge badge-primary" style="font-size: 0.72rem;">CM1 • CM2</span></h1>
+            <p>Conseil Municipal des Enfants — Guide citoyen & Dépouillement officiel</p>
+          </div>
+        </div>
+
+        <div class="header-controls">
+          <!-- Interrupteur de public (Élèves / Adultes) -->
+          <div id="audience-toggle-container"></div>
+
+          <!-- Bouton Projection TNI -->
+          <button type="button" class="header-action-btn" id="btn-header-projection" title="Mode plein écran pour projection sur TNI en classe">
+            <span>📺</span> Projection
+          </button>
+
+          <!-- Toggle Theme Sombre / Clair -->
+          <button type="button" class="header-action-btn" id="btn-toggle-theme" title="Changer le thème visuel">
+            <span>🌙</span> Sombre
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Conteneur principal -->
+    <main class="app-container">
+      <!-- Navigation par onglets -->
+      <nav id="tabs-container" aria-label="Navigation des onglets"></nav>
+
+      <!-- Onglet 1 : Présentation -->
+      <section class="tab-panel active" id="panel-tab-presentation" role="tabpanel" aria-labelledby="btn-tab-presentation"></section>
+
+      <!-- Onglet 2 : Binômes paritaires -->
+      <section class="tab-panel" id="panel-tab-binome" role="tabpanel" aria-labelledby="btn-tab-binome"></section>
+
+      <!-- Onglet 3 : Scrutin uninominal -->
+      <section class="tab-panel" id="panel-tab-uninominal" role="tabpanel" aria-labelledby="btn-tab-uninominal"></section>
+
+      <!-- Onglet 4 : Vote par classement -->
+      <section class="tab-panel" id="panel-tab-classement" role="tabpanel" aria-labelledby="btn-tab-classement"></section>
+
+      <!-- Onglet 5 : Classement corrigé -->
+      <section class="tab-panel" id="panel-tab-corrige" role="tabpanel" aria-labelledby="btn-tab-corrige"></section>
+
+      <!-- Onglet 6 : Dépouillement et Résultats en direct -->
+      <section class="tab-panel" id="panel-tab-depouillement" role="tabpanel" aria-labelledby="btn-tab-depouillement">
+        <div class="depouillement-layout">
+          <!-- Formulaire de paramétrage (verrouillé au démarrage) -->
+          <div class="depouillement-panel-setup" id="setup-form-container"></div>
+
+          <!-- Grille principale de dépouillement -->
+          <div class="depouillement-main-grid">
+            <!-- Colonne gauche : Saisie des bulletins -->
+            <div id="ballot-input-container"></div>
+
+            <!-- Colonne droite : Tableau des résultats en direct -->
+            <div id="live-results-container"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Onglet 7 : Simulateur « Et si... ? » -->
+      <section class="tab-panel" id="panel-tab-simulateur" role="tabpanel" aria-labelledby="btn-tab-simulateur"></section>
+    </main>
+
+    <!-- Pied de page -->
+    <footer class="app-footer no-print">
+      <div class="footer-inner">
+        <div>
+          <strong>Conseil Municipal des Enfants (CME)</strong> — Éducation civique et démocratie scolaire.
+          <div style="font-size: 0.78rem; margin-top: 0.2rem; color: var(--text-muted);">
+            Application 100% hors-ligne • Aucun cookie ni traceur • Respect strict du RGPD pour les mineurs.
+          </div>
+        </div>
+        <div class="footer-links">
+          <span>🇫🇷 République Française</span>
+          <span>⚖️ Égalité Filles-Garçons</span>
+          <span>📄 Conforme Code Électoral</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Script principal de l'application -->
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
