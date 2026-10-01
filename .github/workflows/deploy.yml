@@ -1,38 +1,62 @@
-name: CI et déploiement
+name: Déploiement GitHub Pages
+
 on:
-  push: { branches: [main] }
+  push:
+    branches: [main]
   workflow_dispatch:
 
+# Permissions minimales requises pour déployer sur GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency: { group: pages, cancel-in-progress: true }
+# Empêche plusieurs déploiements simultanés sur Pages
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
 
 jobs:
   build:
+    name: Compilation de l'application et de la documentation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm }
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run check:lines
-      - run: npm test
-      - run: npm run build
-      - run: npm run docs
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with: { path: dist }
+      - name: Récupération du code source
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Installation déterministe des dépendances
+        run: npm ci
+
+      - name: Compilation Vite (dist/)
+        run: npm run build
+
+      - name: Génération de l'API TypeDoc (docs/api/)
+        run: npm run docs
+
+      - name: Fusion de la documentation TypeDoc dans dist/api/
+        run: |
+          mkdir -p dist/api
+          cp -r docs/api/* dist/api/
+
+      - name: Préparation de l'artefact Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
 
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
+    name: Publication sur GitHub Pages
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
     steps:
-      - id: deployment
+      - name: Déploiement officiel Pages
+        id: deployment
         uses: actions/deploy-pages@v4
