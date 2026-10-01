@@ -1,3 +1,9 @@
+/**
+ * @module main
+ * Rôle : point d'entrée principal de l'application cliente CME.
+ * Dépend de : app/store, ui/*, content/*.
+ */
+
 import './styles/base.css';
 import './styles/tabs.css';
 import './styles/depouillement.css';
@@ -18,7 +24,7 @@ import { renderLiveResults } from './ui/liveResults.js';
 import { renderPVModal } from './ui/pv.js';
 import { renderSimulatorTab } from './ui/simulator.js';
 import { ProjectionModeManager } from './ui/projectionMode.js';
-import { Mode } from './engine/types.js';
+import { Mode } from './core/types.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const tabsContainer = document.getElementById('tabs-container') as HTMLElement;
@@ -26,190 +32,80 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeToggleBtn = document.getElementById('btn-toggle-theme') as HTMLButtonElement;
   const projectionBtn = document.getElementById('btn-header-projection') as HTMLButtonElement;
 
-  // Initialisation du Projection Mode
   const projectionManager = new ProjectionModeManager();
-  if (projectionBtn) {
-    projectionBtn.addEventListener('click', () => projectionManager.toggle());
-  }
+  if (projectionBtn) projectionBtn.addEventListener('click', () => projectionManager.toggle());
 
-  // Theme switch (Dark / Light)
+  // Theme switch
   const savedTheme = localStorage.getItem('cme_theme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
-  updateThemeIcon(savedTheme);
+  const updateIcon = (th: string) => { if (themeToggleBtn) themeToggleBtn.innerHTML = th === 'dark' ? '<span>☀️</span> Clair' : '<span>🌙</span> Sombre'; };
+  updateIcon(savedTheme);
 
   if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'light';
-      const nextTheme = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', nextTheme);
-      localStorage.setItem('cme_theme', nextTheme);
-      updateThemeIcon(nextTheme);
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('cme_theme', next);
+      updateIcon(next);
     });
   }
 
-  function updateThemeIcon(theme: string) {
-    if (themeToggleBtn) {
-      themeToggleBtn.innerHTML = theme === 'dark' ? '<span>☀️</span> Clair' : '<span>🌙</span> Sombre';
-    }
-  }
-
-  // Tabs Manager
-  const tabsManager = new TabsManager(tabsContainer, (tabId) => {
-    refreshActiveTab(tabId);
-  });
-  tabsManager.render();
-
-  // Ballot Input Manager
-  const ballotInputContainer = document.getElementById('ballot-input-container') as HTMLElement;
-  const ballotInputManager = new BallotInputManager(ballotInputContainer);
-
-  // Setup Form Container & Live Results Container
+  // Tabs and Ballot managers
+  const ballotInputManager = new BallotInputManager(document.getElementById('ballot-input-container') as HTMLElement);
   const setupFormContainer = document.getElementById('setup-form-container') as HTMLElement;
   const liveResultsContainer = document.getElementById('live-results-container') as HTMLElement;
 
-  // Helper pour essayer un mode
-  function tryMode(mode: string, sousMode?: string) {
-    store.updateConfig({
-      mode: mode as Mode,
-      sousMode: sousMode as any
-    });
+  const tryMode = (mode: string, sousMode?: string) => {
+    store.updateConfig({ mode: mode as Mode, sousMode: sousMode as unknown as undefined });
     tabsManager.switchTab('tab-depouillement');
-  }
+  };
 
-  // Refresh du panneau actif
+  const openPV = () => { renderPVModal(document.body, store.getScrutin(), store.getResults(), () => {}); };
+
+  const tabsManager = new TabsManager(tabsContainer, (tabId) => { refreshActiveTab(tabId); });
+  tabsManager.render();
+
   function refreshActiveTab(tabId: string) {
     const scrutin = store.getScrutin();
     const results = store.getResults();
-
-    // Rendu du toggle audience dans le header
     renderAudienceToggle(audienceToggleContainer);
 
-    switch (tabId) {
-      case 'tab-presentation': {
-        const panel = document.getElementById('panel-tab-presentation');
-        if (panel) {
-          renderPresentationView(panel, (targetTab) => tabsManager.switchTab(targetTab));
-        }
-        break;
-      }
+    const modalityMap: Record<string, typeof binomeContent> = {
+      'tab-binome': binomeContent,
+      'tab-uninominal': uninominalContent,
+      'tab-classement': classementContent,
+      'tab-corrige': corrigeContent
+    };
 
-      case 'tab-binome': {
-        const panel = document.getElementById('panel-tab-binome');
-        if (panel) {
-          renderModalityView(panel, binomeContent, tryMode);
-        }
-        break;
-      }
-
-      case 'tab-uninominal': {
-        const panel = document.getElementById('panel-tab-uninominal');
-        if (panel) {
-          renderModalityView(panel, uninominalContent, tryMode);
-        }
-        break;
-      }
-
-      case 'tab-classement': {
-        const panel = document.getElementById('panel-tab-classement');
-        if (panel) {
-          renderModalityView(panel, classementContent, tryMode);
-        }
-        break;
-      }
-
-      case 'tab-corrige': {
-        const panel = document.getElementById('panel-tab-corrige');
-        if (panel) {
-          renderModalityView(panel, corrigeContent, tryMode);
-        }
-        break;
-      }
-
-      case 'tab-depouillement': {
-        // Formulaire de configuration
-        renderSetupForm(setupFormContainer, () => {
-          // Callback quand on commence le dépouillement
-          ballotInputManager.render(store.getScrutin());
-          renderLiveResults(
-            liveResultsContainer,
-            store.getScrutin(),
-            store.getResults(),
-            () => openPV(),
-            () => projectionManager.toggle()
-          );
-        });
-
-        // Interface de saisie
-        ballotInputManager.render(scrutin);
-
-        // Résultats en direct
-        renderLiveResults(
-          liveResultsContainer,
-          scrutin,
-          results,
-          () => openPV(),
-          () => projectionManager.toggle()
-        );
-        break;
-      }
-
-      case 'tab-simulateur': {
-        const panel = document.getElementById('panel-tab-simulateur');
-        if (panel) {
-          renderSimulatorTab(panel);
-        }
-        break;
-      }
+    if (tabId === 'tab-presentation') {
+      const p = document.getElementById('panel-tab-presentation');
+      if (p) renderPresentationView(p, (t) => tabsManager.switchTab(t));
+    } else if (modalityMap[tabId]) {
+      const p = document.getElementById(`panel-${tabId}`);
+      if (p) renderModalityView(p, modalityMap[tabId], tryMode);
+    } else if (tabId === 'tab-depouillement') {
+      renderSetupForm(setupFormContainer, () => {
+        ballotInputManager.render(store.getScrutin());
+        renderLiveResults(liveResultsContainer, store.getScrutin(), store.getResults(), openPV, () => projectionManager.toggle());
+      });
+      ballotInputManager.render(scrutin);
+      renderLiveResults(liveResultsContainer, scrutin, results, openPV, () => projectionManager.toggle());
+    } else if (tabId === 'tab-simulateur') {
+      const p = document.getElementById('panel-tab-simulateur');
+      if (p) renderSimulatorTab(p);
     }
   }
 
-  function openPV() {
-    const scrutin = store.getScrutin();
-    const results = store.getResults();
-    renderPVModal(document.body, scrutin, results, () => {});
-  }
-
-  // Écouter les mutations du store
   store.subscribe((scrutin, results) => {
-    const currentTab = tabsManager.getActiveTab();
+    const current = tabsManager.getActiveTab();
     renderAudienceToggle(audienceToggleContainer);
-
-    if (currentTab === 'tab-depouillement') {
+    if (current === 'tab-depouillement') {
       ballotInputManager.render(scrutin);
-      renderLiveResults(
-        liveResultsContainer,
-        scrutin,
-        results,
-        () => openPV(),
-        () => projectionManager.toggle()
-      );
+      renderLiveResults(liveResultsContainer, scrutin, results, openPV, () => projectionManager.toggle());
     } else {
-      // Met à jour les textes si l'audience a changé
-      refreshActiveTab(currentTab);
+      refreshActiveTab(current);
     }
   });
 
-  // Premier rendu
   refreshActiveTab('tab-presentation');
-
-  // Gestion du Service Worker PWA : désactivé et vidé sur localhost pour éviter tout conflit de cache Vite
-  if ('serviceWorker' in navigator) {
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        for (const reg of registrations) {
-          reg.unregister();
-        }
-      });
-      if ('caches' in window) {
-        caches.keys().then((keys) => {
-          for (const key of keys) {
-            caches.delete(key);
-          }
-        });
-      }
-    } else if (window.location.protocol.startsWith('http')) {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
-    }
-  }
 });
-

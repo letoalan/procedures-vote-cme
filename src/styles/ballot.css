@@ -1,0 +1,150 @@
+/* Styles de saisie des bulletins (TNI et dépouillement en direct) */
+.depouillement-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.depouillement-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .depouillement-main-grid { grid-template-columns: 1fr; }
+}
+
+.input-ballot-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+.panel-header h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tni-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.85rem;
+}
+
+.tni-vote-btn {
+  background: var(--bg-surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  min-height: var(--tni-btn-height);
+  padding: 0.75rem 1rem;
+  font-family: inherit;
+  font-size: var(--tni-btn-font-size);
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.15s ease;
+  position: relative;
+  user-select: none;
+}
+
+.tni-vote-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: var(--primary-subtle);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.tni-vote-btn:active:not(:disabled) { transform: translateY(0); }
+.tni-vote-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.tni-vote-btn .shortcut-key {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.1rem 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.tni-btn-sexe-f { border-left: 5px solid #9333ea; }
+.tni-btn-sexe-g { border-left: 5px solid #0d9488; }
+
+.tni-vote-btn.tni-btn-blanc {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+.tni-vote-btn.tni-btn-blanc:hover:not(:disabled) {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+.tni-vote-btn.tni-btn-nul {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+.tni-vote-btn.tni-btn-nul:hover:not(:disabled) {
+  background: #fee2e2;
+  border-color: #ef4444;
+}
+
+.virtual-ranked-ballot {
+  background: var(--bg-app);
+  border: 1px dashed var(--border-focus);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recent-ballots-log {
+  background: var(--bg-app);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.recent-ballots-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+.recent-ballots-list li {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 0.2rem;
+}

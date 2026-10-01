@@ -90,7 +90,7 @@ export class TabsManager {
 
       // Navigation clavier ARIA (Flèche gauche / Flèche droite)
       btn.addEventListener('keydown', (e) => {
-        let targetIndex = index;
+        let targetIndex: number;
         if (e.key === 'ArrowRight') {
           targetIndex = (index + 1) % buttons.length;
         } else if (e.key === 'ArrowLeft') {

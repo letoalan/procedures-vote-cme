@@ -1,6 +1,20 @@
-import { Bulletin, TallyResult } from './types.js';
+/**
+ * @module engine/tally
+ * Rôle : dépouillement général des bulletins (votants, blancs, nuls, exprimés).
+ * Dépend de : core/types, engine/thresholds.
+ */
 
-export function calculateTally(bulletins: Bulletin[], inscrits: number, sieges: number = 2): TallyResult {
+import { Bulletin, TallyResult } from '../core/types.js';
+import { majoriteAbsolue, quotaSur } from './thresholds.js';
+
+/**
+ * Calcule la synthèse numérique de dépouillement (inscrits, votants, blancs, nuls, exprimés).
+ * @param bulletins Liste des bulletins dépouillés
+ * @param inscrits Nombre d'inscrits sur la liste électorale
+ * @param sieges Nombre de sièges à pourvoir (défaut 2)
+ * @returns Résultat chiffré du dépouillement
+ */
+export function calculateTally(bulletins: Bulletin[], inscrits: number, sieges = 2): TallyResult {
   let blancs = 0;
   let nuls = 0;
   let exprimes = 0;
@@ -27,8 +41,6 @@ export function calculateTally(bulletins: Bulletin[], inscrits: number, sieges: 
 
   const votants = blancs + nuls + exprimes;
   const participationPct = inscrits > 0 ? Math.round((votants / inscrits) * 1000) / 10 : 0;
-  const majoriteAbsolue = exprimes > 0 ? Math.floor(exprimes / 2) + 1 : 1;
-  const quotaSur = exprimes > 0 ? Math.floor(exprimes / (sieges + 1)) + 1 : 1;
 
   return {
     inscrits,
@@ -37,7 +49,7 @@ export function calculateTally(bulletins: Bulletin[], inscrits: number, sieges: 
     nuls,
     exprimes,
     participationPct,
-    majoriteAbsolue,
-    quotaSur
+    majoriteAbsolue: majoriteAbsolue(exprimes),
+    quotaSur: quotaSur(exprimes, sieges)
   };
 }

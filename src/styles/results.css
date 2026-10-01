@@ -1,0 +1,129 @@
+/* Styles des résultats en direct, tableaux et double colonne */
+.live-results-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.75rem;
+}
+
+.metric-card {
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.metric-val {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+.metric-card.highlight { background: var(--primary-subtle); border-color: var(--primary-light); }
+.metric-card.highlight .metric-val { color: var(--primary); }
+.metric-card.success { background: var(--accent-subtle); border-color: var(--accent-light); }
+.metric-card.success .metric-val { color: var(--accent); }
+
+.progress-container { display: flex; flex-direction: column; gap: 0.35rem; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+.progress-track { background: var(--border); border-radius: var(--radius-full); height: 10px; overflow: hidden; }
+.progress-fill { background: linear-gradient(90deg, var(--primary), var(--accent)); height: 100%; border-radius: var(--radius-full); transition: width 0.3s ease; }
+
+.results-table { width: 100%; border-collapse: collapse; text-align: left; }
+.results-table th { background: var(--bg-app); padding: 0.75rem 1rem; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 2px solid var(--border); }
+.results-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+.results-table tr.elected-row { background: var(--accent-subtle); }
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  font-weight: 800;
+  font-size: 0.85rem;
+  background: var(--bg-app);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+.rank-badge.rank-1 { background: #fef08a; color: #854d0e; border-color: #eab308; }
+.rank-badge.rank-2 { background: #e2e8f0; color: #334155; border-color: #94a3b8; }
+
+.cand-name-cell { display: flex; align-items: center; gap: 0.5rem; }
+.sexe-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+}
+.sexe-f { background: #f3e8ff; color: #7e22ce; }
+.sexe-g { background: #ccfbf1; color: #0f766e; }
+
+.double-column-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+@media (max-width: 768px) {
+  .double-column-comparison { grid-template-columns: 1fr; }
+}
+
+.ranking-column-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.ranking-column-box.corrected { border: 2px solid var(--accent); }
+.ranking-column-header {
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  background: var(--bg-app);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.proclamation-banner {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-md);
+}
+.proclamation-text h3 { font-size: 1.25rem; font-weight: 800; }
+.proclamation-elected-list { font-size: 1.1rem; font-weight: 700; margin-top: 0.35rem; }

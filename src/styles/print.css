@@ -1,6 +1,5 @@
 /* Styles du Procès-Verbal officiel (PV) — Affichage écran & Impression A4 */
 
-/* 1. Affichage à l'écran (dans la boîte modale de prévisualisation) */
 .pv-document {
   display: block;
   width: 100%;
@@ -18,11 +17,10 @@
 }
 
 [data-theme="dark"] .pv-document {
-  background: #ffffff; /* Le PV officiel reste toujours sur fond papier blanc officiel */
+  background: #ffffff;
   color: #000000;
 }
 
-/* En-tête officiel du PV */
 .pv-header {
   border-bottom: 2px solid #000000;
   padding-bottom: 10px;
@@ -41,18 +39,9 @@
   color: #000000;
 }
 
-.pv-cme-title {
-  text-align: right;
-}
+.pv-cme-title { text-align: right; }
+.pv-cme-title h2 { font-size: 14pt; margin: 0; font-weight: 800; color: #000000; }
 
-.pv-cme-title h2 {
-  font-size: 14pt;
-  margin: 0;
-  font-weight: 800;
-  color: #000000;
-}
-
-/* Grille de métadonnées */
 .pv-meta-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -76,7 +65,6 @@
   color: #000000;
 }
 
-/* Tableaux du PV */
 .pv-table {
   width: 100%;
   border-collapse: collapse;
@@ -84,30 +72,17 @@
   font-size: 9.5pt;
 }
 
-.pv-table th,
-.pv-table td {
+.pv-table th, .pv-table td {
   border: 1px solid #475569;
   padding: 6px 10px;
   text-align: left;
   color: #000000;
 }
 
-.pv-table th {
-  background-color: #f1f5f9;
-  font-weight: bold;
-}
+.pv-table th { background-color: #f1f5f9; font-weight: bold; }
+.pv-table td.text-center, .pv-table th.text-center { text-align: center; }
+.pv-table td.text-right, .pv-table th.text-right { text-align: right; }
 
-.pv-table td.text-center,
-.pv-table th.text-center {
-  text-align: center;
-}
-
-.pv-table td.text-right,
-.pv-table th.text-right {
-  text-align: right;
-}
-
-/* Grille des chiffres clés */
 .pv-chiffres-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -117,64 +92,17 @@
   background: #ffffff;
 }
 
-.pv-chiffre-cell {
-  border-right: 1px solid #475569;
-  padding: 6px 4px;
-}
+.pv-chiffre-cell { border-right: 1px solid #475569; padding: 6px 4px; }
+.pv-chiffre-cell:last-child { border-right: none; }
+.pv-chiffre-val { font-size: 13pt; font-weight: bold; color: #000000; }
+.pv-chiffre-lbl { font-size: 7.5pt; text-transform: uppercase; color: #334155; margin-top: 2px; }
 
-.pv-chiffre-cell:last-child {
-  border-right: none;
-}
+.pv-elus-box { border: 2px solid #000000; padding: 12px 16px; margin-bottom: 16px; background: #f8fafc; }
+.pv-elus-box h3 { font-size: 11pt; margin-bottom: 6px; text-transform: uppercase; color: #000000; }
+.pv-elus-list { font-size: 11.5pt; font-weight: bold; color: #000000; }
+.pv-rule-explanation { font-style: italic; font-size: 9pt; margin-top: 6px; color: #1e293b; }
 
-.pv-chiffre-val {
-  font-size: 13pt;
-  font-weight: bold;
-  color: #000000;
-}
-
-.pv-chiffre-lbl {
-  font-size: 7.5pt;
-  text-transform: uppercase;
-  color: #334155;
-  margin-top: 2px;
-}
-
-/* Proclamation et Élus */
-.pv-elus-box {
-  border: 2px solid #000000;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  background: #f8fafc;
-}
-
-.pv-elus-box h3 {
-  font-size: 11pt;
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  color: #000000;
-}
-
-.pv-elus-list {
-  font-size: 11.5pt;
-  font-weight: bold;
-  color: #000000;
-}
-
-.pv-rule-explanation {
-  font-style: italic;
-  font-size: 9pt;
-  margin-top: 6px;
-  color: #1e293b;
-}
-
-/* Cadres de signature */
-.pv-signatures-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 18px;
-}
-
+.pv-signatures-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
 .pv-signature-box {
   border: 1px solid #000000;
   height: 95px;
@@ -184,7 +112,6 @@
   justify-content: space-between;
   background: #ffffff;
 }
-
 .pv-signature-title {
   font-size: 8.5pt;
   font-weight: bold;
@@ -193,20 +120,10 @@
   padding-bottom: 4px;
   color: #000000;
 }
+.pv-signature-mention { font-size: 7.5pt; color: #64748b; text-align: center; }
 
-.pv-signature-mention {
-  font-size: 7.5pt;
-  color: #64748b;
-  text-align: center;
-}
-
-/* 2. Overrides stricts pour l'impression A4 */
 @media print {
-  @page {
-    size: A4 portrait;
-    margin: 12mm 15mm;
-  }
-
+  @page { size: A4 portrait; margin: 12mm 15mm; }
   body {
     background: #ffffff !important;
     color: #000000 !important;
@@ -214,26 +131,10 @@
     line-height: 1.35;
     font-family: 'Times New Roman', Times, serif, system-ui;
   }
-
-  /* Masquer tous les éléments d'interface interactifs */
-  .app-header,
-  .tabs-nav,
-  .header-controls,
-  .app-footer,
-  .btn,
-  .no-print,
-  .depouillement-panel-setup,
-  .input-ballot-panel,
-  .proclamation-actions,
-  .modal-overlay,
-  .tab-panel:not(.active) {
-    display: none !important;
-  }
-
-  .print-pv-only {
-    display: block !important;
-  }
-
+  .app-header, .tabs-nav, .header-controls, .app-footer, .btn, .no-print,
+  .depouillement-panel-setup, .input-ballot-panel, .proclamation-actions,
+  .modal-overlay, .tab-panel:not(.active) { display: none !important; }
+  .print-pv-only { display: block !important; }
   .pv-document {
     display: block !important;
     width: 100% !important;
@@ -244,16 +145,10 @@
     border: none !important;
     border-radius: 0 !important;
   }
-
-  .pv-meta-grid,
-  .pv-table th,
-  .pv-elus-box {
+  .pv-meta-grid, .pv-table th, .pv-elus-box {
     background-color: #f1f5f9 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-
-  .pv-signatures-grid {
-    page-break-inside: avoid;
-  }
+  .pv-signatures-grid { page-break-inside: avoid; }
 }

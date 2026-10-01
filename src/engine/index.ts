@@ -1,10 +1,22 @@
-import { ResultatsCalcul, Scrutin } from './types.js';
+/**
+ * @module engine
+ * Rôle : point d'entrée du moteur de calcul électoral pur.
+ * Dépend de : core/types, modules engine sous-jacents.
+ */
+
+import { ResultatsCalcul, Scrutin } from '../core/types.js';
 import { computeBinomeResults } from './binome.js';
 import { computeUninominalResults } from './uninominal.js';
 import { computeBordaResults } from './borda.js';
-import { computeSTVResults } from './stv.js';
+import { computeSTVResults } from './stv/index.js';
 import { computeCorrigeResults } from './corrige.js';
 
+/**
+ * Calcule l'ensemble des résultats, quotas et attributions de sièges pour un scrutin donné.
+ * Fonction pure et sans effet de bord.
+ * @param scrutin Objet scrutin complet (config + bulletins)
+ * @returns Résultats calculés détaillés
+ */
 export function calculateElectionResults(scrutin: Scrutin): ResultatsCalcul {
   const mode = scrutin.config.mode;
   const sousMode = scrutin.config.sousMode;
@@ -53,19 +65,18 @@ export function calculateElectionResults(scrutin: Scrutin): ResultatsCalcul {
           elusIds: res.elusIds,
           departageInfo: res.departageInfo
         };
-      } else {
-        const res = computeBordaResults(scrutin);
-        return {
-          tally: res.tally,
-          mode: 'classement',
-          sousMode: 'borda',
-          sieges: scrutin.config.sieges || 2,
-          candidatsResultats: res.candidatsResultats,
-          matriceRangs: res.matriceRangs,
-          elusIds: res.elusIds,
-          departageInfo: res.departageInfo
-        };
       }
+      const res = computeBordaResults(scrutin);
+      return {
+        tally: res.tally,
+        mode: 'classement',
+        sousMode: 'borda',
+        sieges: scrutin.config.sieges || 2,
+        candidatsResultats: res.candidatsResultats,
+        matriceRangs: res.matriceRangs,
+        elusIds: res.elusIds,
+        departageInfo: res.departageInfo
+      };
     }
 
     case 'corrige': {
@@ -89,11 +100,15 @@ export function calculateElectionResults(scrutin: Scrutin): ResultatsCalcul {
   }
 }
 
+/** Alias conventionnel pour calcul de résultat */
+export const computeResult = calculateElectionResults;
+
 export * from './types.js';
+export * from './thresholds.js';
 export * from './tally.js';
 export * from './ties.js';
 export * from './binome.js';
 export * from './uninominal.js';
 export * from './borda.js';
-export * from './stv.js';
+export * from './stv/index.js';
 export * from './corrige.js';

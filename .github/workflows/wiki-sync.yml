@@ -1,0 +1,45 @@
+name: Synchronisation du Wiki
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/wiki/**'
+      - '.github/workflows/wiki-sync.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du projet
+        uses: actions/checkout@v4
+
+      - name: Synchroniser docs/wiki vers GitHub Wiki
+        env:
+          WIKI_URL: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          echo "Clonage du wiki distant..."
+          if git clone "$WIKI_URL" wiki_repo; then
+            cd wiki_repo
+            echo "Nettoyage et copie des fichiers markdown..."
+            rm -rf ./*
+            cp -r ../docs/wiki/* .
+            
+            git add .
+            if git status --porcelain | grep -q .; then
+              git commit -m "docs(wiki): synchronisation automatique depuis docs/wiki/"
+              git push origin master || git push origin main
+              echo "Wiki synchronisé avec succès."
+            else
+              echo "Aucune modification à synchroniser."
+            fi
+          else
+            echo "Avertissement: Impossible de cloner le wiki. Vérifiez que la fonctionnalité Wiki est activée dans les paramètres GitHub."
+          fi
